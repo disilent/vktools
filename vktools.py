@@ -14,6 +14,21 @@ class vktools(object):
             return list(reduce(lambda x,y: x | y, friends))
         except vk.exceptions.VkAPIError:
             return []
+
+    def AllFriends(self, target, ids=[]):
+        friends = set(self.Friends([target]))
+        queue = list(friends) + ids
+        while queue:
+            last = queue.pop()
+            '''
+            if last not in friends and target in self.Friends([last]):
+                friends.add(last)
+            '''
+            for userid in self.MutualFriends([target, last]):
+                if userid not in friends:
+                    friends.add(userid)
+                    queue.append(userid)
+        return list(friends)
     
     def LimitedMutualFriends(self, ids):
         return list(reduce(lambda x,y: x & y, [set(self.Friends([userid])) for userid in ids]))
