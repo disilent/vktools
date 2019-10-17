@@ -16,17 +16,20 @@ class vktools(object):
             return []
 
     def AllFriends(self, target, ids=[]):
-        friends = set(self.Friends([target]))
+        friends = set(self.Friends(target))
         queue = list(friends) + ids
         while queue:
             last = queue.pop()
-            if last not in friends and target in self.Friends([last]):
+            if last not in friends and target[0] in self.Friends([last]):
                 friends.add(last)
-            for userid in self.MutualFriends([target, last]):
+            for userid in self.MutualFriends([target[0], last]):
                 if userid not in friends:
                     friends.add(userid)
                     queue.append(userid)
         return list(friends)
+
+    def HiddenFriends(self, target, ids=[]):
+        return list(set(self.AllFriends(target, ids=ids)) - set(self.Friends([target])))
     
     def LimitedMutualFriends(self, ids):
         return list(reduce(lambda x,y: x & y, [set(self.Friends([userid])) for userid in ids]))
