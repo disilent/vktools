@@ -20,10 +20,8 @@ class vktools(object):
         queue = list(friends) + ids
         while queue:
             last = queue.pop()
-            '''
             if last not in friends and target in self.Friends([last]):
                 friends.add(last)
-            '''
             for userid in self.MutualFriends([target, last]):
                 if userid not in friends:
                     friends.add(userid)
