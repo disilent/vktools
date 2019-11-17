@@ -9,11 +9,16 @@ class vktools(object):
         self.version = version
         self.lang = lang
 
-    def Friends(self, ids):
+    def Friends(self, ids, print=False):
         try:
             friends = [set(self.api.friends.get(user_id=userid, v=self.version)['items']) for userid in ids]
-            return list(reduce(lambda x, y: x | y, friends))
+            friends = list(reduce(lambda x, y: x | y, friends))
+            if print:
+                self.Print(friends, line='Friends:')
+            return friends
         except vk.exceptions.VkAPIError:
+            if print:
+                self.Print([], line='Error in Friends func(VkAPIError)')
             return []
 
     def AllFriends(self, target, ids=[]):
@@ -81,7 +86,9 @@ class vktools(object):
     def GetUserId(self, ids):
         return [userinfo[0]['id'] for userinfo in self.GetInfo(ids)]
 
-    def Print(self, ids):
+    def Print(self, ids, line=''):
+        if line:
+            print(line)
         names = self.GetName(ids)
         links = self.GetLink(ids)
         for i in zip(names, links):
