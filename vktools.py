@@ -14,14 +14,18 @@ class vktools(object):
             friends = [set(self.api.friends.get(user_id=userid, v=self.version)['items']) for userid in ids]
             friends = list(reduce(lambda x, y: x | y, friends))
             if print:
-                self.Print(friends, line='Friends:')
+                friendsline = ''
+                for i in ids:
+                    friendsline += self.GetName([i])[0] + ', '
+                friendsline = friendsline[:-2]
+                self.Print(friends, line='Friends of ' + friendsline + ':')
             return friends
         except vk.exceptions.VkAPIError:
             if print:
                 self.Print([], line='Error in Friends func(VkAPIError)')
             return []
 
-    def AllFriends(self, target, ids=[]):
+    def AllFriends(self, target, ids=[], print=False):
         friends = set(self.Friends(target))
         queue = list(friends) + ids
         while queue:
@@ -32,7 +36,10 @@ class vktools(object):
                 if userid not in friends:
                     friends.add(userid)
                     queue.append(userid)
-        return list(friends)
+        friends = list(friends)
+        if print:
+            self.Print(friends, line='AllFriends of ' + self.GetName(target)[0] + ':')
+        return friends
 
     def HiddenFriends(self, target, ids=[]):
         return list(set(self.AllFriends(target, ids=ids)) - set(self.Friends([target])))
