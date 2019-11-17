@@ -1,17 +1,18 @@
 import vk
 from functools import reduce
 
+
 class vktools(object):
     def __init__(self, token, version='5.102', lang='ru'):
         self.session = vk.Session(access_token=token)
         self.api = vk.API(self.session)
         self.version = version
         self.lang = lang
-    
+
     def Friends(self, ids):
         try:
             friends = [set(self.api.friends.get(user_id=userid, v=self.version)['items']) for userid in ids]
-            return list(reduce(lambda x,y: x | y, friends))
+            return list(reduce(lambda x, y: x | y, friends))
         except vk.exceptions.VkAPIError:
             return []
 
@@ -30,9 +31,9 @@ class vktools(object):
 
     def HiddenFriends(self, target, ids=[]):
         return list(set(self.AllFriends(target, ids=ids)) - set(self.Friends([target])))
-    
+
     def LimitedMutualFriends(self, ids):
-        return list(reduce(lambda x,y: x & y, [set(self.Friends([userid])) for userid in ids]))
+        return list(reduce(lambda x, y: x & y, [set(self.Friends([userid])) for userid in ids]))
 
     def UnlimitedMutualFriends(self, ids):
         friends = {userid: self.Friends([userid]) for userid in ids}
@@ -58,13 +59,13 @@ class vktools(object):
             except vk.exceptions.VkAPIError:
                 continue
         return list(result)
-    
+
     def GetInfo(self, ids):
         try:
             return [self.api.users.get(user_ids=userid, v=self.version, lang=self.lang) for userid in ids]
         except vk.exceptions.VkException:
             return []
-    
+
     def GetName(self, ids):
         return [userinfo[0]['first_name'] + ' ' + userinfo[0]['last_name'] for userinfo in self.GetInfo(ids)]
 
@@ -80,3 +81,8 @@ class vktools(object):
     def GetUserId(self, ids):
         return [userinfo[0]['id'] for userinfo in self.GetInfo(ids)]
 
+    def Print(self, ids):
+        names = self.GetName(ids)
+        links = self.GetLink(ids)
+        for i in zip(names, links):
+            print(i[0] + ' - ' + i[1])
