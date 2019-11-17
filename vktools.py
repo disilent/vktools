@@ -14,11 +14,7 @@ class vktools(object):
             friends = [set(self.api.friends.get(user_id=userid, v=self.version)['items']) for userid in ids]
             friends = list(reduce(lambda x, y: x | y, friends))
             if print:
-                friendsline = ''
-                for i in ids:
-                    friendsline += self.GetName([i])[0] + ', '
-                friendsline = friendsline[:-2]
-                self.Print(friends, line='Friends of ' + friendsline + ':')
+                self.Print(friends, line='Friends of ' + self.GetNameLine(ids) + ':')
             return friends
         except vk.exceptions.VkAPIError:
             if print:
@@ -41,13 +37,19 @@ class vktools(object):
             self.Print(friends, line='AllFriends of ' + self.GetName(target)[0] + ':')
         return friends
 
-    def HiddenFriends(self, target, ids=[]):
-        return list(set(self.AllFriends(target, ids=ids)) - set(self.Friends([target])))
+    def HiddenFriends(self, target, ids=[], print=False):
+        friends = list(set(self.AllFriends(target, ids=ids)) - set(self.Friends([target])))
+        if print:
+            self.Print(friends, line='HiddenFriends of ' + self.GetName(target)[0] + ':')
+        return friends
 
-    def LimitedMutualFriends(self, ids):
-        return list(reduce(lambda x, y: x & y, [set(self.Friends([userid])) for userid in ids]))
+    def LimitedMutualFriends(self, ids, print=False):
+        friends = list(reduce(lambda x, y: x & y, [set(self.Friends([userid])) for userid in ids]))
+        if print:
+            self.Print(friends, line='LimitedMutualFriends of ' + self.GetNameLine(ids) + ':')
+        return friends
 
-    def UnlimitedMutualFriends(self, ids):
+    def UnlimitedMutualFriends(self, ids, print=False):
         friends = {userid: self.Friends([userid]) for userid in ids}
         result = set()
         for key, value in friends.items():
@@ -56,12 +58,18 @@ class vktools(object):
                 newfriends.add(key)
                 if set(ids).issubset(newfriends):
                     result.add(friend)
-        return list(result)
+        friends = list(result)
+        if print:
+            self.Print(friends, line='UnlimitedMutualFriends of ' + self.GetNameLine(ids) + ':')
+        return friends
 
-    def MutualFriends(self, ids):
-        return list(set(self.LimitedMutualFriends(ids)) | set(self.UnlimitedMutualFriends(ids)))
+    def MutualFriends(self, ids, print=False):
+        friends = list(set(self.LimitedMutualFriends(ids)) | set(self.UnlimitedMutualFriends(ids)))
+        if print:
+            self.Print(friends, line='MutualFriends of ' + self.GetNameLine(ids) + ':')
+        return friends
 
-    def GroupFriends(self, ids, groups):
+    def GroupFriends(self, ids, groups, print=False):
         friends = self.Friends(ids)
         result = set()
         for groupid in groups:
@@ -70,6 +78,7 @@ class vktools(object):
                 result |= set(i[0] for i in zip(friends, res) if i[1])
             except vk.exceptions.VkAPIError:
                 continue
+        self.Print(list(result), 'GroupFriends of ' + self.GetNameLine(ids) + ':')
         return list(result)
 
     def GetInfo(self, ids):
@@ -92,6 +101,13 @@ class vktools(object):
 
     def GetUserId(self, ids):
         return [userinfo[0]['id'] for userinfo in self.GetInfo(ids)]
+
+    def GetNameLine(self, ids):
+        line = ''
+        for i in ids:
+            line += self.GetName([i])[0] + ', '
+        line = line[:-2]
+        return line
 
     def Print(self, ids, line=''):
         if line:
