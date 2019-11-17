@@ -71,6 +71,7 @@ class vktools(object):
 
     def GroupFriends(self, ids, groups, print=False):
         friends = self.Friends(ids)
+        groups = self.GetGroupId(groups)
         result = set()
         for groupid in groups:
             try:
