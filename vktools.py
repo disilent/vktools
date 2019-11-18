@@ -116,4 +116,4 @@ class vktools(object):
         names = self.GetName(ids)
         links = self.GetLink(ids)
         for i in zip(names, links):
-            print(f'{i[0]:<50} : {i[1]}')
+            print(f'{i[0]:<40} : {i[1]}')
