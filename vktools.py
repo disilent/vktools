@@ -92,7 +92,7 @@ class vktools(object):
         return [userinfo[0]['first_name'] + ' ' + userinfo[0]['last_name'] for userinfo in self.GetInfo(ids)]
 
     def GetLink(self, ids):
-        return ['https://vk.com/id' + str(userid) for userid in self.GetUserId(ids)]
+        return ['vk.com/id' + str(userid) for userid in self.GetUserId(ids)]
 
     def GetGroupId(self, groups):
         try:
@@ -115,5 +115,5 @@ class vktools(object):
             print(line)
         names = self.GetName(ids)
         links = self.GetLink(ids)
-        for i in zip(names, links):
-            print(f'{i[0]:<40} : {i[1]}')
+        for name, link in zip(names, links):
+            print(f'{name:<40} : {link}')
