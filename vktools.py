@@ -92,7 +92,7 @@ class vktools(object):
         return [userinfo[0]['first_name'] + ' ' + userinfo[0]['last_name'] for userinfo in self.GetInfo(ids)]
 
     def GetLink(self, ids):
-        return ['vk.com/id' + str(userid) for userid in self.GetUserId(ids)]
+        return ['https://vk.com/id' + str(userid) for userid in self.GetUserId(ids)]
 
     def GetGroupId(self, groups):
         try:
