@@ -1,4 +1,5 @@
 # vktools
+Модуль для анализа публичных данных пользователей vk.
 ## Usage
 ```python
 from vktools import vktools
