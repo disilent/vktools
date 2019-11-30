@@ -8,13 +8,13 @@ ACCESS_TOKEN = 'access_token'
 test = vktools(ACCESS_TOKEN)
 ```
 ## Основные используемые функции:
-###HiddenFriends
+### HiddenFriends
 Выводит список всех доступных скрытых друзей пользователя.
-###AllFriends
+### AllFriends
 Выводит список всех доступных друзей пользователя.
-###Friends
+### Friends
 Выводит список открытых друзей пользователей.
-###MutualFriends
+### MutualFriends
 Находит общих друзей группы пользователей.
-###GroupFriends
+### GroupFriends
 Отображает друзей пользователей, состоящих в такой-то группе.
