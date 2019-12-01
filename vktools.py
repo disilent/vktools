@@ -4,14 +4,14 @@ from functools import reduce
 
 class vktools(object):
     def __init__(self, token, version='5.102', lang='ru'):
-        self.session = vk.Session(access_token=token)
-        self.api = vk.API(self.session)
-        self.version = version
-        self.lang = lang
+        self._session = vk.Session(access_token=token)
+        self._api = vk.API(self._session)
+        self._version = version
+        self._lang = lang
 
     def Friends(self, ids, print=True):
         try:
-            friends = [set(self.api.friends.get(user_id=userid, v=self.version)['items']) for userid in ids]
+            friends = [set(self._api.friends.get(user_id=userid, v=self._version)['items']) for userid in ids]
             friends = list(reduce(lambda x, y: x | y, friends))
             if print:
                 self.Print(friends, line='Friends of ' + self.GetNameLine(ids) + ':')
@@ -75,7 +75,7 @@ class vktools(object):
         result = set()
         for groupid in groups:
             try:
-                res = [ans['member'] for ans in self.api.groups.isMember(user_ids=friends, group_id=groupid, v=self.version)]
+                res = [ans['member'] for ans in self._api.groups.isMember(user_ids=friends, group_id=groupid, v=self._version)]
                 result |= set(i[0] for i in zip(friends, res) if i[1])
             except vk.exceptions.VkAPIError:
                 continue
@@ -84,7 +84,7 @@ class vktools(object):
 
     def GetInfo(self, ids):
         try:
-            return [self.api.users.get(user_ids=userid, v=self.version, lang=self.lang) for userid in ids]
+            return [self._api.users.get(user_ids=userid, v=self._version, lang=self._lang) for userid in ids]
         except vk.exceptions.VkException:
             return []
 
@@ -96,7 +96,7 @@ class vktools(object):
 
     def GetGroupId(self, groups):
         try:
-            return [group['id'] for group in self.api.groups.getById(group_ids=groups, v=self.version)]
+            return [group['id'] for group in self._api.groups.getById(group_ids=groups, v=self._version)]
         except vk.exceptions.VkAPIError:
             return []
 
