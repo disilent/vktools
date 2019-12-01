@@ -38,7 +38,7 @@ class vktools(object):
         return friends
 
     def HiddenFriends(self, target, ids=[], output=True):
-        friends = list(set(self.AllFriends(target, ids=ids, output=False)) - set(self.Friends([target], print=False)))
+        friends = list(set(self.AllFriends(target, ids=ids, output=False)) - set(self.Friends([target], output=False)))
         if output:
             self.Print(friends, line='HiddenFriends of ' + self.GetName(target)[0] + ':')
         return friends
@@ -64,7 +64,7 @@ class vktools(object):
         return friends
 
     def MutualFriends(self, ids, output=True):
-        friends = list(set(self.LimitedMutualFriends(ids, output=False)) | set(self.UnlimitedMutualFriends(ids, printing=False)))
+        friends = list(set(self.LimitedMutualFriends(ids, output=False)) | set(self.UnlimitedMutualFriends(ids, output=False)))
         if output:
             self.Print(friends, line='MutualFriends of ' + self.GetNameLine(ids) + ':')
         return friends
