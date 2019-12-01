@@ -64,7 +64,7 @@ class vktools(object):
         return friends
 
     def MutualFriends(self, ids, printing=True):
-        friends = list(set(self.LimitedMutualFriends(ids, printing=False)) | set(self.UnlimitedMutualFriends(ids, print=False)))
+        friends = list(set(self.LimitedMutualFriends(ids, printing=False)) | set(self.UnlimitedMutualFriends(ids, printing=False)))
         if printing:
             self.Print(friends, line='MutualFriends of ' + self.GetNameLine(ids) + ':')
         return friends
@@ -79,7 +79,8 @@ class vktools(object):
                 result |= set(i[0] for i in zip(friends, res) if i[1])
             except vk.exceptions.VkAPIError:
                 continue
-        self.Print(list(result), 'GroupFriends of ' + self.GetNameLine(ids) + ':')
+        if printing:
+            self.Print(list(result), 'GroupFriends of ' + self.GetNameLine(ids) + ':')
         return list(result)
 
     def GetInfo(self, ids):
